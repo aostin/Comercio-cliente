@@ -14,8 +14,8 @@ import comercio.comun.Usuario;
 public class ServicioAutenticacionImp extends UnicastRemoteObject implements ServicioAutenticacionInterface{
 		
 	private static final long serialVersionUID = 1L;
-	private Map <Integer,Usuario> usuarios = new HashMap <Integer,Usuario>();
-	private static int numUsuario =0;
+	private Map <String,Usuario> usuarios = new HashMap <String,Usuario>();
+	private static int numSesion=-1;
 	
 	protected ServicioAutenticacionImp() throws RemoteException {
 		super();
@@ -23,22 +23,24 @@ public class ServicioAutenticacionImp extends UnicastRemoteObject implements Ser
 	}
 
 	@Override
-	public int Alta(String nombre, String pass) throws RemoteException {
+	public boolean Alta(String nombre, String pass) throws RemoteException {
 		Usuario nuevo;
-		if (usuarios.containsValue(nombre)) {
-			System.out.println("Usuario ya registrado");
-			return 0;
+
+		if (usuarios.containsKey(nombre)){
+			System.out.println("Ya existe un usuario autenticado en esta sesión");
+			System.out.println("Si desea registrar un nuevo usuario inicie una nueva sesión");
+			return false;
 		
 		}
 		else {
 			
 			nuevo = new Usuario(nombre,pass);
-			numUsuario+=1;
-			nuevo.setNombre(nombre);
-			usuarios.put(numUsuario,nuevo );
+			System.out.println();
+			usuarios.put(nombre,nuevo);
+			
 		
 		
-			return numUsuario;	
+			return true;	
 			
 		}
 			

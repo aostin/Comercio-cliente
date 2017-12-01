@@ -49,7 +49,13 @@ public class Cliente {
 		nombre = leerConsola();
 		System.out.println("Escriba su contraseña");
 		pass=leerConsola();
-		System.out.println(IAutentica.Alta(nombre, pass));
+	
+	 if (IAutentica.Alta(nombre, pass) == false){
+		 
+			System.out.println("Ya existe un usuario autenticado en esta sesión");
+	 }
+	 else
+		 System.out.println("Usuario registrado correctamente");
 		
 	}
 	
