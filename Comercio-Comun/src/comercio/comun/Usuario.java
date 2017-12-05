@@ -24,17 +24,13 @@ public class Usuario {
 	 * @param pass su contraseña
 	 */
 	
-	public Usuario (String nombre, String pass) {
+	public Usuario (String nombre, String pass, boolean esDistribuidor) {
 		this.nombre= nombre;
 		this.pass = pass;
+		this.esDistribuidor = esDistribuidor;
 	}
 	
 	
-	/**
-	 * Setter the idUsuario.
-	 *
-	 * @param idUsuario el nuevo identificador de usuario
-	 */
 	
 	public void setNombre (String nombre) {
 		this.nombre=nombre;

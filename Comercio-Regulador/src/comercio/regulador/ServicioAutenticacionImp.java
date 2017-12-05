@@ -2,6 +2,7 @@ package comercio.regulador;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,8 @@ import comercio.comun.Usuario;
 public class ServicioAutenticacionImp extends UnicastRemoteObject implements ServicioAutenticacionInterface{
 		
 	private static final long serialVersionUID = 1L;
-	private Map <String,Usuario> usuarios = new HashMap <String,Usuario>();
+	private Map <Integer,Usuario> autenticados = new HashMap <Integer,Usuario>();
+	private List<Usuario> registrados = new ArrayList<Usuario>();
 	private static int numSesion=-1;
 	
 	protected ServicioAutenticacionImp() throws RemoteException {
@@ -23,20 +25,17 @@ public class ServicioAutenticacionImp extends UnicastRemoteObject implements Ser
 	}
 
 	@Override
-	public boolean Alta(String nombre, String pass) throws RemoteException {
+	public boolean Alta(String nombre, String pass, boolean esDistribuidor) throws RemoteException {
 		Usuario nuevo;
-
-		if (usuarios.containsKey(nombre)){
-			System.out.println("Ya existe un usuario autenticado en esta sesión");
-			System.out.println("Si desea registrar un nuevo usuario inicie una nueva sesión");
+		if ( buscarUsuario(nombre)!=null){
 			return false;
 		
 		}
 		else {
 			
-			nuevo = new Usuario(nombre,pass);
+			nuevo = new Usuario(nombre,pass, esDistribuidor);
 			System.out.println();
-			usuarios.put(nombre,nuevo);
+			registrados.add(nuevo);
 			
 		
 		
@@ -50,7 +49,50 @@ public class ServicioAutenticacionImp extends UnicastRemoteObject implements Ser
 	@Override
 	public int login(String nombre, String pass) throws RemoteException {
 		// TODO Auto-generated method stub
-		return 0;
+		Usuario autenticado = buscarUsuario(nombre);
+		if (autenticado!=null) {
+			if (autenticado.getPass().equals(pass)) {
+				numSesion+=1;
+				autenticados.put(numSesion, autenticado);
+				return numSesion;
+			}
+			
+			
+		}
+		return -1;
+	}
+	
+	
+	
+	private Usuario buscarUsuario(String nombre) {
+		for (Usuario user: registrados) {
+			if (user.getNombre().equals(nombre)) {
+				return user;
+				
+			}
+			
+		}
+		return null;
+		
+		
+	}
+	
+	public List<Usuario> getRegistrados() {
+		return registrados;
+	}
+
+	@Override
+	public void baja(String nombre, String pass, int numSesion) throws RemoteException {
+		List<Usuario> nuevoRegistrados = new ArrayList<Usuario>();
+		for (Usuario user : registrados) {
+			if (!user.getNombre().equals(nombre)) {
+				nuevoRegistrados.add(user);
+			}
+		}
+		autenticados.remove(numSesion);
+		registrados = nuevoRegistrados;
+		// TODO Auto-generated method stub
+		
 	}
 
 }
