@@ -1,6 +1,12 @@
 package comercio.comun;
 
-public class Oferta {
+import java.io.Serializable;
+
+public class Oferta implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2787239736751372269L;
 	private int tipo;
 	private float precio;
 	private int kgs;

@@ -6,15 +6,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import comercio.comun.PoliticaSeguridad;
 import comercio.comun.ServicioAutenticacionInterface;
+import comercio.comun.ServicioMercanciasInterface;
 public class Cliente {
 
 	private static ServicioAutenticacionInterface IAutentica;
+	private static ServicioMercanciasInterface IMercancias;
 	private static Console console = System.console();
 	private static String nombre;
 	private static String pass;
 	private static int numSesion;
+	private static List<Integer> demandas =  new ArrayList<Integer>();
 	private static BufferedReader reader = new BufferedReader(
 											new InputStreamReader(System.in));
 	public static void main(String[] args) throws Exception {
@@ -25,6 +33,7 @@ public class Cliente {
         }	
 		
 		IAutentica = (ServicioAutenticacionInterface)Naming.lookup("rmi://127.0.1.1:8888/autentica");
+		IMercancias = (ServicioMercanciasInterface)Naming.lookup("rmi://127.0.1.1:8888/mercancias");
 		
 		String opt = "";			
 		do {
@@ -87,7 +96,7 @@ public class Cliente {
 		opt = leerConsola();
 
 			switch (opt) {
-				case "1":; break;
+				case "1":introducirDemanda(); break;
 				case "2": ;  break;	
 				case "3":; break;
 				case "4": IAutentica.baja(nombre, pass, numSesion);  break;
@@ -97,6 +106,22 @@ public class Cliente {
 		
 		while (!opt.equals("5"));
 
+		
+	}
+	
+	private static void introducirDemanda() throws RemoteException {
+		int i=1;
+		int tipo;
+		System.out.println("Introduzca el tipo de mercancía que desee:");
+		
+		for (String tipoMer: IMercancias.getTiposOferta()) {
+			System.out.println(i+".-" + tipoMer);
+			i+=1;
+		}
+		System.out.println("Tipo mercancia: ");
+		tipo =Integer.parseInt(leerConsola());
+		demandas.add(tipo);
+		IMercancias.nuevaDemanda(nombre, tipo);
 		
 	}
 	

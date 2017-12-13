@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.Map;
 
+import comercio.comun.Oferta;
 import comercio.comun.PoliticaSeguridad;
 import comercio.comun.ServicioAutenticacionInterface;
 import comercio.comun.ServicioMercanciasInterface;
@@ -18,9 +20,7 @@ public class distribuidor {
 	private static String nombre;
 	private static String pass;
 	private static int numSesion;
-	private enum tiposOferta	{
-		Tomates, Limones,Naranjas,Fresas, Plátanos, Melones, Sandías
-	}
+	
 	
 	private static BufferedReader reader = new BufferedReader(
 											new InputStreamReader(System.in));
@@ -95,7 +95,7 @@ public class distribuidor {
 
 			switch (opt) {
 				case "1":nuevaOferta(); break;
-				case "2": ;  break;	
+				case "2":quitarOferta() ;  break;	
 				case "3":; break;
 				case "4": IAutentica.baja(nombre, pass, numSesion);  break;
 				case "5": break;
@@ -112,8 +112,8 @@ public class distribuidor {
 		float precio;
 		int kgs;
 		int i=1;
-		for (tiposOferta tipos : tiposOferta.values()) {
-			System.out.println(i +".- " + tipos);
+		for (String tipoMer : IMercancias.getTiposOferta() ) {
+			System.out.println(i +".- " + tipoMer);
 			i+=1;
 			
 		}
@@ -127,6 +127,23 @@ public class distribuidor {
 		System.out.print("Mercancía introducida correctamente");
 		
 		
+	}
+	
+	private static void quitarOferta() throws RemoteException  {
+		int idOferta;
+		Map<Integer,Oferta> ofertas = IMercancias.getOfertas();
+		String[] tiposMercancias = IMercancias.getTiposOferta();
+		System.out.println("Estas son las ofertas que ha introducido:");
+		System.out.println("Id\tTipo\tPrecio\tKgs");
+		for (Map.Entry<Integer, Oferta> oferta : ofertas.entrySet()) {
+			System.out.println(oferta.getValue().getIdoferta() + "\t" + "\t" + tiposMercancias[(oferta.getValue().getTipo()-1)] + "\t" + oferta.getValue().getPrecio() + "\t" + oferta.getValue().getKgs() );
+			
+		}
+		System.out.println("¿Qué oferta desea quitar?");
+		System.out.println("Introduzca su id:");
+		idOferta=Integer.parseInt(leerConsola());
+		IMercancias.quitarOferta(idOferta);
+		System.out.println("Oferta quitada satisfactoriamente");
 	}
 	
 	private static String leerConsola() {	

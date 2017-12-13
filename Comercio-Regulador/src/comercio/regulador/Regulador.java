@@ -27,8 +27,7 @@ public class Regulador {
 			new InputStreamReader(System.in));
 	private static ServicioAutenticacionImp servicioAutenticacion;	
 	private static ServicioMercanciasImp servicioMercancias;
-	private static String[] tiposOferta =new String[]	{
-		"Tomates", "Limones","Naranjas","Fresas", "Plátanos", "Melones", "Sandías"};
+
 		public static void main(String[] args) throws Exception {		
 			
 			// Gestor de seguridad - no es necesario en este ejemplo, 
@@ -72,7 +71,7 @@ public class Regulador {
 			    opt = leerConsola();
 				switch (opt) {
 					case "1":listarOfertas() ; break;
-					case "2": ;  break;		
+					case "2": listarDemandas();  break;		
 					case "3": listarUsuarios(false);;  break;	
 					case "4": listarUsuarios(true);  break;	
 					case "5": salir();  break;	
@@ -98,12 +97,28 @@ public class Regulador {
 		
 		private static void listarOfertas () {
 			Map<Integer,Oferta> ofertas = servicioMercancias.getOfertas();
+			String[] tiposMercancias = servicioMercancias.getTiposOferta();
+
 			System.out.println("Id\tDistribuidor\tTipo\tPrecio\tKgs");
 			for (Map.Entry<Integer, Oferta> oferta : ofertas.entrySet()) {
-				System.out.println(oferta.getValue().getIdoferta() + "\t" + oferta.getValue().getDistribuidor() + "\t" + tiposOferta[(oferta.getValue().getTipo())] + "\t" + oferta.getValue().getPrecio() + "\t" + oferta.getValue().getKgs() );
+				System.out.println(oferta.getValue().getIdoferta() + "\t" + oferta.getValue().getDistribuidor() + "\t" + tiposMercancias[(oferta.getValue().getTipo()-1)] + "\t" + oferta.getValue().getPrecio() + "\t" + oferta.getValue().getKgs() );
 				
 			}
 		}
+		
+		private static void listarDemandas() {
+			Map<String,List<Integer>> demandas = servicioMercancias.getDemandas();
+			List<Integer> listaMercancias;
+			String[] tiposMercancias = servicioMercancias.getTiposOferta();
+			System.out.println("Demandante\tMercancía");
+			for (Map.Entry<String,List<Integer>> demanda: demandas.entrySet()) {
+				listaMercancias = demanda.getValue();
+				for (int tipoDemanda: listaMercancias) {
+					System.out.println(demanda.getKey() + "\t" + tiposMercancias[tipoDemanda-1]);
+				}
+			}
+		}
+		
 
 		private static String leerConsola() {	
 			if (console != null) return console.readLine();
