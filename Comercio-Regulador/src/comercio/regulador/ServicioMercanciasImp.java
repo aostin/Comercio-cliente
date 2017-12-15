@@ -28,10 +28,9 @@ public class ServicioMercanciasImp extends UnicastRemoteObject implements Servic
 	}
 
 	@Override
-	public void nuevaOferta (int tipo, float precio, int kilo,
-			String distribuidor) {
-			Oferta oferta = new Oferta(idOferta, tipo, precio, kilo, distribuidor);
-			ofertas.put(idOferta, oferta);
+	public void nuevaOferta (Oferta nuevaOferta) {
+			
+			ofertas.put(idOferta, nuevaOferta);
 			idOferta+=1;
 		// TODO Auto-generated method stub
 		
@@ -61,8 +60,29 @@ public class ServicioMercanciasImp extends UnicastRemoteObject implements Servic
 		return ServicioMercanciasImp.ofertas;
 	}
 	
+	@Override 
+	
+	public Map<Integer, Oferta> getOfertas(List<Integer> demandas) {
+		Map<Integer, Oferta> ofertasCliente = new HashMap<Integer,Oferta>();
+		for (Map.Entry<Integer, Oferta> oferta : ofertas.entrySet()) {
+			for (int demanda : demandas) {
+				if (oferta.getValue().getTipo() == demanda) {
+					ofertasCliente.put(oferta.getKey(), oferta.getValue());
+				}
+			}
+		}
+			return ofertasCliente;
+			
+		}
+	
 	public String[] getTiposOferta() {
 		return tiposOferta;
+	}
+	
+	
+	
+	public int getIdOferta () {
+		return idOferta;
 	}
 
 }

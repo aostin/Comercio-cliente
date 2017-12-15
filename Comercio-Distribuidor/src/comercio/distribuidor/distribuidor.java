@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import comercio.comun.Oferta;
@@ -20,6 +22,9 @@ public class distribuidor {
 	private static String nombre;
 	private static String pass;
 	private static int numSesion;
+	private static List<Oferta> misOfertas = new ArrayList<Oferta>();
+	private static List<Oferta> misVentas = new ArrayList<Oferta>();
+	
 	
 	
 	private static BufferedReader reader = new BufferedReader(
@@ -112,6 +117,7 @@ public class distribuidor {
 		float precio;
 		int kgs;
 		int i=1;
+		Oferta nuevaOferta;
 		for (String tipoMer : IMercancias.getTiposOferta() ) {
 			System.out.println(i +".- " + tipoMer);
 			i+=1;
@@ -123,7 +129,9 @@ public class distribuidor {
 		precio=Float.parseFloat(leerConsola());
 		System.out.println("Introduzca los el peso(kgs) de la mercancía");
 		kgs=Integer.parseInt(leerConsola());
-		IMercancias.nuevaOferta(tipo, precio, kgs, nombre);
+		nuevaOferta= new Oferta(IMercancias.getIdOferta(),tipo,precio,kgs,nombre);
+		IMercancias.nuevaOferta(nuevaOferta);
+		misOfertas.add(nuevaOferta);
 		System.out.print("Mercancía introducida correctamente");
 		
 		

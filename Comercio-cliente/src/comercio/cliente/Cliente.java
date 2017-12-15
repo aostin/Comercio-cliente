@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import comercio.comun.Oferta;
 import comercio.comun.PoliticaSeguridad;
 import comercio.comun.ServicioAutenticacionInterface;
 import comercio.comun.ServicioMercanciasInterface;
@@ -97,7 +98,7 @@ public class Cliente {
 
 			switch (opt) {
 				case "1":introducirDemanda(); break;
-				case "2": ;  break;	
+				case "2":recibirOferta() ;  break;	
 				case "3":; break;
 				case "4": IAutentica.baja(nombre, pass, numSesion);  break;
 				case "5": break;
@@ -122,6 +123,17 @@ public class Cliente {
 		tipo =Integer.parseInt(leerConsola());
 		demandas.add(tipo);
 		IMercancias.nuevaDemanda(nombre, tipo);
+		
+	}
+	
+	private static void recibirOferta() throws RemoteException {
+		Map<Integer,Oferta> ofertasRecibidas = IMercancias.getOfertas(demandas);
+		String[] tiposMercancias = IMercancias.getTiposOferta();
+		System.out.println("Id\tDistribuidor\tTipo\tPrecio\tKgs");
+		for (Map.Entry<Integer, Oferta> oferta : ofertasRecibidas.entrySet()) {
+			System.out.println(oferta.getValue().getIdoferta() + "\t" + oferta.getValue().getDistribuidor() + "\t" + tiposMercancias[(oferta.getValue().getTipo()-1)] + "\t" + oferta.getValue().getPrecio() + "\t" + oferta.getValue().getKgs() );
+			
+		}
 		
 	}
 	
